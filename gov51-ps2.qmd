@@ -1,11 +1,8 @@
 ---
 title: "gov51-ps2"
+author: "Angela Calderon Pio"
 ---
 
-## Quarto
+<https://github.com/angelacalderonpio/gov51-ps2.git>
 
-Quarto enables you to weave together content and executable code into a finished document. To learn more about Quarto see <https://quarto.org>.
-
-```{r}
-1 + 1
-```
+## Gov 51 Problem Set 2
