@@ -1,8 +1,118 @@
 ---
 title: "gov51-ps2"
 author: "Angela Calderon Pio"
+format: pdf
 ---
 
 <https://github.com/angelacalderonpio/gov51-ps2.git>
 
 ## Gov 51 Problem Set 2
+
+## 1.1 Exploring the Experiment
+
+```{r}
+
+
+library(tidyverse)
+library(tinytex)
+
+gay <- read_csv("data/raw/gay.csv")
+
+
+```
+
+```{r}
+##Q1.1 
+
+nrow(gay)
+
+gay |>
+  group_by(study) |>
+  summarize(n = n())
+
+gay|> 
+  group_by(treatment) |>
+  summarize(n = n())
+
+```
+
+There are 69,592 total observations in gay.csv. The study has 2 unique values (1 or 2). There are 5 treatment conditions, which are: "No Contact," "Recycling Script by Gay Canvasser," "Recycling Script by Straight Canvasser," "Same-Sex Marriage Script by Gay Canvasser," or "Same-Sex Marriage Script by Straight Canvasser."
+
+```{r}
+##Q1.2
+
+gay |>
+  filter(study ==1, wave ==1) |>
+  group_by(treatment) |>
+  summarize(mean_ssm = mean(ssm, na.rm = TRUE))
+
+```
+
+The treatment group that shows the highest average support is Recycling Script by Gay Canvasser.
+
+```{r}
+##Q1.3
+
+gay |>
+  filter(study ==1, wave ==1) |>
+  group_by(treatment) |>
+  summarize(sd_ssm = sd(ssm, na.rm = TRUE))
+
+
+```
+
+The standard deviations are roughly similar across the five treatment groups, ranging from roughly 1.66 to 1.70. This similarity is important because in a randomized experiment it suggests that the groups have comparable variability in responses as they are being drawn from the same underlying population and randomly assigned to treatments. If the variability were very different among the groups, it could indicate that the groups were not drawn from comparable populations which would make it more difficult to attribute differences in outcome to the treatment.
+
+```{r, fig.width = 10, fig.height = 7}
+##Q1.4
+
+bar_plot_gay<- gay |>
+  filter(study ==1, wave ==1) |>
+  group_by(treatment) |>
+  summarize(mean_ssm = mean(ssm, na.rm = TRUE))
+
+ggplot(bar_plot_gay, aes(x= treatment, y= mean_ssm, 
+                         fill = treatment)) + 
+  geom_col() + 
+  labs(x = "Treatment Group", y = "Mean Support for SSM", 
+       title = "Mean SSM Support by Treatment Group (Study 1, Wave 1)") + 
+  theme(axis.text.x = element_text(angle = 90, hjust = 1)) + 
+  theme(legend.position = "none") + 
+  theme(text = element_text(size =14))
+
+```
+
+```{r}
+
+##Q1.5
+q1_data <- gay |> filter(study ==1, wave ==1)|>
+filter(treatment %in% c("No Contact", "Same-Sex Marriage Script by Gay
+                        Canvasser"))
+
+q1_data |> group_by(treatment) |>
+summarize(mean_ssm = mean(ssm, na.rm = TRUE), sd_ssm = sd(ssm, na.rm = TRUE))
+
+q1_data
+
+(3.025195 - 3.042764) / sqrt((1.666099^2 + 1.680540^2)/2)
+
+```
+
+The standardized difference is roughly -0.01, which is much smaller than 0.25 in absolute value, suggesting that the "Same-Sex Marriage Script by Gay Canvasser" group and the "No Contact" group are well balanced at baseline. Therefore, the groups appear similar before treatment.
+
+```{r}
+##Q1.6
+q1_data2 <- gay |> filter(study ==1, wave ==2)|>
+filter(treatment %in% c("No Contact", "Same-Sex Marriage Script by Gay 
+                        Canvasser"))
+
+q1_data2 |> 
+  group_by(treatment) |>
+summarize(mean_ssm = mean(ssm, na.rm = TRUE))
+
+
+(3.139489	- 3.039615)
+
+```
+
+The difference in means is 0.099874, meaning the gay canvasser group has about 0.10 higher SSM support than the no contact group in Wave 2. Because the groups were balanced at baseline, this suggests that this difference at Wave 2 reflects the average treatment effect of the canvassing treatment. The positive difference (roughly 0.10) indicates that the gay canvasser group has higher support for same-sex marriage than the no contact group. Overall, this suggests that exposure to the canvassing treatment increased support for same-sex marriage.
