@@ -115,4 +115,131 @@ summarize(mean_ssm = mean(ssm, na.rm = TRUE))
 
 ```
 
-The difference in means is 0.099874, meaning the gay canvasser group has about 0.10 higher SSM support than the no contact group in Wave 2. Because the groups were balanced at baseline, this suggests that this difference at Wave 2 reflects the average treatment effect of the canvassing treatment. The positive difference (roughly 0.10) indicates that the gay canvasser group has higher support for same-sex marriage than the no contact group. Overall, this suggests that exposure to the canvassing treatment increased support for same-sex marriage.
+The difference in means is 0.099874, meaning the gay canvasser group has about 0.10 higher support for same-sex marriage than the no contact group in Wave 2. Because the groups were balanced at baseline, this suggests that this difference at Wave 2 likely reflects the effects of the canvassing treatment (average treatment effect). In other words, this suggests that exposure to the gay canvasser increased support for same-sex marriage relative to no contact.
+
+\newpage
+
+## 2.1 The Baseline Distribution 
+
+```{r}
+##Q2.1 
+gay_r <- read_csv("data/raw/gayreshaped.csv")
+
+ccap <- read_csv("data/raw/ccap2012.csv")
+
+nrow(gay_r)
+ncol(gay_r)
+colnames(gay_r)
+
+nrow(ccap)
+ncol(ccap)
+colnames(ccap)
+```
+
+For Gay Reshaped, there are 11,948 observations and 6 columns: "study," "treatment," "therm1," "therm2," "therm3," and "therm4."
+
+For Ccap, there are 43,998 observations and 3 columns: "...1," "caseid," and "gaytherm."
+
+```{r}
+
+##Q2.2 
+
+gay_r |>
+  filter(study ==1) |>
+  summarize(mean = mean(therm1, na.rm= TRUE),
+            median = median(therm1, na.rm = TRUE),
+            sd = sd(therm1, na.rm = TRUE))
+
+ccap|>
+  summarize(mean = mean(gaytherm, na.rm= TRUE),
+            median = median(gaytherm, na.rm = TRUE),
+            sd = sd(gaytherm, na.rm = TRUE))
+
+```
+
+I notice that the summary statistics of the two datasets are very similar. The means, medians, and standard deviations are nearly the same.
+
+```{r}
+#Q2.3
+
+lacour <- gay_r |>
+  filter(study ==1) |>
+  select(therm1) |>
+  mutate(source = "LaCour")
+
+ccap_data <- ccap |>
+  select(gaytherm) |>
+  rename(therm1 =gaytherm) |>
+  mutate(source = "CCAP")
+
+both <- bind_rows(lacour, ccap_data)
+
+ggplot(both, aes(x=therm1, fill = source)) + 
+  geom_histogram(breaks = seq(0,100, by=5)) + 
+                   facet_wrap(~source) +
+  labs(title = "Baseline Feeling Thermometer Distribution", 
+       x = "Feeling Thermometer (0-100)", 
+       y = "Count")
+
+```
+
+The two histograms appear roughly similar in their overall distribution. For example, both show concentrations and the lower and upper ends of the scale and a large share of responses around 50 on the x-axis. Because the shapes look quite similar, it does not appear that the two datasets come from very different populations.
+
+```{r}
+#Q2.4
+
+#Study 1 control group
+
+study1_control <- gay_r |>
+  filter(study ==1, treatment == "No Contact")
+
+cor(study1_control$therm1, study1_control$therm2, use = "complete.obs")
+
+sd(study1_control$therm2 - study1_control$therm1, na.rm = TRUE)
+
+## Study 2 control group
+
+study2_control <- gay_r |>
+  filter(study ==2, treatment == "No Contact")
+
+cor(study2_control$therm1, study2_control$therm2, use = "complete.obs")
+
+sd(study2_control$therm2 - study2_control$therm1, na.rm = TRUE)
+
+```
+
+Study 1: correlation = 0.9976, SD of change = 1.99
+
+Study 2: correlation = 0.9734, SD of change = 6.61
+
+Study 2 demonstrates a more plausible pattern because its correlation found in this problem (0.973) is within the typical range of 0.85-0.97 for real feeling thermometer data. On the other hand, Study 1's correlation (0.9976) is very close to 1. Furthermore, taking a look at the standard deviation, Study 2's (6.61) is much larger than Study 1's (1.99): this could point to a more realistic variation in responses. Therefore, Study 2 seems more believable.
+
+```{r}
+
+#Q2.5
+
+ggplot(study1_control, aes(x= therm1, y=therm2)) +
+  geom_point(alpha = 0.4) + 
+  geom_abline(slope = 1, intercept = 0, color = "pink") + 
+  labs(title = "Study 1 Control Group",
+       x = "Thermometer 1", y = "Thermometer 2")
+
+
+ggplot(study2_control, aes(x= therm1, y=therm2)) +
+  geom_point(alpha = 0.4) + 
+  geom_abline(slope = 1, intercept = 0, color = "pink") +
+  labs(title = "Study 2 Control Group",
+       x = "Thermometer 1", y = "Thermometer 2")
+
+
+```
+
+Study 2 looks more like real longitudinal data. The Study 1 scatter plot depicts the points fitting almost perfectly along the 45 degree line, with the exception of around x= 0, 50, and 100, meaning that the responses collected during Wave 2 are nearly the same to those at Wave 1. On the other hand, Study 2's plot demonstrates more spread around the line, meaning that respondents' answers changed somewhat between the two waves. This pattern is more realistic an consistent with actual longitudinal survey data because it's more realistic that responses vary over time.
+
+## Q2.6
+
+The findings discovered in question 2 suggest that perhaps the data was fabricated rather than collected in a real experiment. LaCour's findings were suspiciously similar to that of CCAP's national survey. For example, the baseline distributions in Study 1 closely match those of the national survey, which again, should signal some alarm because Lacour claimed to have used his own sample. The shape of the two thermometer histograms are quite similar. Secondly, the test correlation in Study 1 is extremely higher (at roughly 0.998), when typically real feeling thermometer data is around 0.95 to 0.97. And then, the standard deviation of the within-person change was about 1.99, which means that respondents' answers hardly changed in between waves, which isn't realistic because people's mood changes often and can impact their responses. A fabricator might produce data like this because consistent responses realistic-looking baseline distributions can make the results appear convincing.
+
+\newpage
+
+## 3.1 Comparing Baselines
