@@ -262,7 +262,8 @@ gay_r |>
   group_by(treatment) |>
   summarize(
     mean_therm1 = mean(therm1, na.rm= TRUE),
-            sd_therm1 = sd(therm1, na.rm = TRUE))
+            sd_therm1 = sd(therm1, na.rm = TRUE),
+    n = n())
 
 
 ```
@@ -449,7 +450,7 @@ summary(fit_q44)
 
 a\) Yes, the estimate decreased from about 3.57 to 2.4, but notably is it still a positive effect.
 
-b\) Yes, the standard error became much smaller (from 1.24 to 0.34), indicated a more precise estimate.
+b\) Yes, the standard error became much smaller (from 1.24 to 0.34), indicated a more precise estimate. It reduced by 73%.
 
 c\) Controlling for baseline attitudes improves precision because therm1 strongly predicts therm2. Including therm1 in the regression removes variation in therm2 that is unrelated to the treatment, thereby reducing noise in the model. So, this leads to a smaller standard error and a more precise estimate of the treatment effect.
 
@@ -462,6 +463,9 @@ The R-squared increases from about 0.0039 in Q4.3 to about 0.925 in Q4.4 after a
 person_a = data.frame(treated = 1, therm1= 50)
 
 person_b = data.frame(treated = 0, therm1 = 50)
+
+predict(fit_q44, newdata = person_a)
+predict(fit_q44, newdata = person_b) 
 
 predict(fit_q44, newdata = person_a) - predict(fit_q44, newdata = person_b) 
 
