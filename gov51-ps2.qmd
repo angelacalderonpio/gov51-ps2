@@ -44,7 +44,8 @@ There are 69,592 total observations in gay.csv. The study has 2 unique values (1
 gay |>
   filter(study ==1, wave ==1) |>
   group_by(treatment) |>
-  summarize(mean_ssm = mean(ssm, na.rm = TRUE))
+  summarize(mean_ssm = mean(ssm, na.rm = TRUE),
+            n = n())
 
 ```
 
@@ -61,7 +62,7 @@ gay |>
 
 ```
 
-The standard deviations are roughly similar across the five treatment groups, ranging from roughly 1.66 to 1.70. This similarity is important because in a randomized experiment it suggests that the groups have comparable variability in responses as they are being drawn from the same underlying population and randomly assigned to treatments. If the variability were very different among the groups, it could indicate that the groups were not drawn from comparable populations which would make it more difficult to attribute differences in outcome to the treatment.
+The standard deviations are roughly similar across the five treatment groups, ranging from roughly 1.666099 to 1.702533. This similarity is important because in a randomized experiment it suggests that the groups have comparable variability in responses as they are being drawn from the same underlying population and randomly assigned to treatments. If the variability were very different among the groups, it could indicate that the groups were not drawn from comparable populations which would make it more difficult to attribute differences in outcome to the treatment.
 
 ```{r, fig.width = 10, fig.height = 7}
 ##Q1.4
@@ -100,7 +101,7 @@ q1_data
 
 ```
 
-The standardized difference is roughly -0.01, which is much smaller than 0.25 in absolute value, suggesting that the "Same-Sex Marriage Script by Gay Canvasser" group and the "No Contact" group are well balanced at baseline. Therefore, the groups appear similar before treatment.
+The standardized difference is roughly -0.01049939, which is much smaller than 0.25 in absolute value, suggesting that the "Same-Sex Marriage Script by Gay Canvasser" group and the "No Contact" group are well balanced at baseline. Therefore, the groups appear similar before treatment.
 
 ```{r}
 ##Q1.6
@@ -121,7 +122,7 @@ The difference in means is 0.099874, meaning the gay canvasser group has about 0
 
 \newpage
 
-## 2.1 The Baseline Distribution 
+## 2.1 The Baseline Distribution
 
 ```{r}
 ##Q2.1 
@@ -176,12 +177,16 @@ ccap_data <- ccap |>
 
 both <- bind_rows(lacour, ccap_data)
 
-ggplot(both, aes(x=therm1, fill = source)) + 
+p<- ggplot(both, aes(x=therm1, fill = source)) + 
   geom_histogram(breaks = seq(0,100, by=5)) + 
                    facet_wrap(~source) +
   labs(title = "Baseline Feeling Thermometer Distribution", 
        x = "Feeling Thermometer (0-100)", 
        y = "Count")
+
+p
+
+ggsave("output/baseline_histogram.png", plot = , width = 6, height = 4)
 
 ```
 
@@ -210,11 +215,11 @@ sd(study2_control$therm2 - study2_control$therm1, na.rm = TRUE)
 
 ```
 
-Study 1: correlation = 0.9976, SD of change = 1.99
+Study 1: correlation = 0.9975817, SD of change = 1.987678
 
-Study 2: correlation = 0.9734, SD of change = 6.61
+Study 2: correlation = 0.9734449, SD of change = 6.605738
 
-Study 2 demonstrates a more plausible pattern because its correlation found in this problem (0.973) is within the typical range of 0.85-0.97 for real feeling thermometer data. On the other hand, Study 1's correlation (0.9976) is very close to 1. Furthermore, taking a look at the standard deviation, Study 2's (6.61) is much larger than Study 1's (1.99): this could point to a more realistic variation in responses. Therefore, Study 2 seems more believable.
+Study 2 demonstrates a more plausible pattern because its correlation found in this problem (0.9734449) is within the typical range of 0.85-0.97 for real feeling thermometer data. On the other hand, Study 1's correlation (0.9975817) is very close to 1. Furthermore, taking a look at the standard deviation, Study 2's (6.605738) is much larger than Study 1's (1.987678): this could point to a more realistic variation in responses. Therefore, Study 2 seems more believable.
 
 ```{r}
 
@@ -262,7 +267,7 @@ gay_r |>
 
 ```
 
-There are 2,441 observations in Study 2. The mean and standard deviation for the No Contact group is 57.89 and 28.70, respectively. For Same-Sex Marriage Script with the Gay Canvasser treatment, the mean was 59.35 and 28.42, respectively.
+There are 2,441 observations in Study 2. The mean and standard deviation for the No Contact group is 57.88612 and 28.69655, respectively. For Same-Sex Marriage Script with the Gay Canvasser treatment, the mean was 59.35057 and 28.41578, respectively.
 
 ```{r}
 #Q3.2
@@ -311,7 +316,7 @@ q33
 
 -   Standard Deviation Gay Canvasser = 28.41578
 
-The standardized difference in means is about 0.05. Because it is below 0.25, it suggests a good balance.
+The standardized difference in means is 0.05128253. Because it is below 0.25, it suggests a good balance.
 
 ```{r}
 
@@ -328,7 +333,7 @@ summarize(
 
 ```
 
-The mean post-period thermometer score is higher in the gay canvasser group, with a difference of roughly 3.57 points compared to the no-contact group.
+The mean post-period thermometer score is higher in the gay canvasser group, with a difference of 3.56788 points compared to the no-contact group.
 
 ```{r}
 ##Q3.5
@@ -347,7 +352,7 @@ lower
 upper
 ```
 
-The 95% CI is roughly \[1.13, 6.00\]. Since zero is **not** in the interval, we reject no difference and conclude that the gay canvasser group has higher average *therm2* than the no-contact group after the conversation. In other words, the groups differed after the conversations.
+The 95% CI is roughly \[1.133289, 6.002471\]. Since zero is **not** in the interval, we reject no difference and conclude that the gay canvasser group has higher average *therm2* than the no-contact group after the conversation. In other words, the groups differed after the conversations.
 
 ```{r}
 
@@ -386,7 +391,7 @@ summary(fit_sl)
 
 ```
 
-The slope is 0.9924, meaning that a one-point increase in therm1 predicts about a 0.99 point increase in therm2. The R-squared is 0.9952, meaning that therm1 explains almost all of the variation in therm 2. And the residual standard error is 1.976, meaning that there is very little unexplained variation in the model.
+The slope is 0.992454, meaning that a one-point increase in therm1 predicts about a 0.99 point increase in therm2. The R-squared is 0.9952, meaning that therm1 explains almost all of the variation in therm 2. And the residual standard error is 1.976, meaning that there is very little unexplained variation in the model.
 
 ```{r}
 ##Q4.2
@@ -400,7 +405,7 @@ summary(fit_s2)
 
 ```
 
-The slope is 0.9687, meaning that a one-point increase in therm1 predicts about a 0.9687 point increase in therm2. The R-squared is 0.9476, meaning that therm1 explains a large share of the variation in therm 2. And the residual standard error is 6.547, which is much larger than in Study 1 and indicates more unexplained variation in the model. This pattern is more consistent with non-fabricated data as it demonstrates response changing rather than remaining identical.
+The slope is 0.968662, meaning that a one-point increase in therm1 predicts about a 0.9687 point increase in therm2. The R-squared is 0.9476, meaning that therm1 explains a large share of the variation in therm 2. And the residual standard error is 6.547, which is much larger than in Study 1 and indicates more unexplained variation in the model. This pattern is more consistent with non-fabricated data as it demonstrates response changing rather than remaining identical.
 
 **Comparison**: The Study 1 model shows a slope very close to 1 (roughly 0.992) and an R-squared of about 0.995, meaning that therm1 almost perfectly predicts therm2. On the other hand, the Study 2 model has a lower slope (of about 0.969) and a lower R-squared (of roughly 0.948), indicating that therm1 explains less of the variation in them2. So, this pattern is consistent with regression to the mean where follow-up responses move slightly toward the average rather than remaining identical to baseline values. Therefore, Study 2 looks more like actual data, while Study 1 again appears very (unrealistically) consistent.
 
