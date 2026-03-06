@@ -121,7 +121,7 @@ The difference in means is 0.099874, meaning the gay canvasser group has about 0
 
 \newpage
 
-## 2.1 The Baseline Distribution 
+## 2.1 The Baseline Distribution
 
 ```{r}
 ##Q2.1 
@@ -369,7 +369,7 @@ The correlations remain very high but decline slightly as the waves move further
 
 ## Q3.7
 
-Study 2's data is definitely more realistic compared to Study 1's. In Study 1, the re-test correlation between therm1 and therm2 was extremely high (roughly 0.998 and the standard deviation of within-person change was only about 1.99, meaning that responses barely changed over time. Study 2, on the other hand, had a lower and more realistic correlation (about 0.97) and much larger standard deviation (6.6), meaning that people's responses varied more between survey waves (which is more realistic). The treatment effect in Study 2 was also modest and messier, with the gay canvasser group averaging about 3.6 thermometer points higher than the no-contact group, which is more aligned with real data. It makes sense that real treatment effects would be messy because people's opinions fluctuate and survey responses are affected by measurement error, such as interpretation or uncertainty. Simple tools like means, standard deviations, histograms, and correlations helped detect the fraud because they showed patterns in Study 1 that were unrealistically consistent compared to real survey data.
+Study 2's data is definitely more realistic compared to Study 1's. In Study 1, the re-test correlation between therm1 and therm2 was extremely high (roughly 0.998 and the standard deviation of within-person change was only about 1.99, meaning that responses barely changed over time. Study 2, on the other hand, had a lower and more realistic correlation (about 0.97) and much larger standard deviation (6.6), meaning that people's responses varied more between survey waves (which is more realistic). The treatment effect in Study 2 was also modest and messier, with the gay canvasser group averaging about 3.6 thermometer points higher than the no-contact group, which is more aligned with real data. It makes sense that real treatment effects would be messy because people's opinions fluctuate and survey responses are affected by measurement error, such as interpretation or uncertainty. Simple tools like means, standard deviations, histograms, and correlations helped detected the fraud because they showed patterns in Study 1 that were unrealistically consistent compared to real survey data.
 
 \newpage
 
@@ -423,7 +423,7 @@ summary(fit_q43)
 
 ```
 
-The estimated treatment effect is 3.5679, with a standard error of 1.2423, a t-statistic of 2.872, and a p-value of 0.00412. I noticed that the coefficient (3.5679) is identical to the difference in means found in Q3.4. The intercept (57.6352) estimates the average therm2 score for the control group, that is, if treated = 0. Yes, the difference between groups is statistically significant at alpha = 0.05, as it is well below 0.05 (it's 0.00412).
+The estimated treatment effect is 3.5679, with a standard error of 1.2423, a t-statistic of 2.72, and a p-value of 0.00412. I noticed that the coefficient (3.5679) is identical to the difference in means found in Q3.4. The intercept (57.6352) estimates the average therm2 score for the control group, that is, if treated = 0. Yes, the difference between groups is statistically significant at alpha = 0.05, as it is well below 0.05 (it's 0.00412).
 
 ```{r}
 ##Q4.4
