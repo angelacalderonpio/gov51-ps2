@@ -85,11 +85,13 @@ ggplot(bar_plot_gay, aes(x= treatment, y= mean_ssm,
 ```{r}
 
 ##Q1.5
-q1_data <- gay |> filter(study ==1, wave ==1)|>
+q1_data <- gay |> 
+  filter(study ==1, wave ==1)|>
 filter(treatment %in% c("No Contact", "Same-Sex Marriage Script by Gay
                         Canvasser"))
 
-q1_data |> group_by(treatment) |>
+q1_data |> 
+  group_by(treatment) |>
 summarize(mean_ssm = mean(ssm, na.rm = TRUE), sd_ssm = sd(ssm, na.rm = TRUE))
 
 q1_data
@@ -243,3 +245,128 @@ The findings discovered in question 2 suggest that perhaps the data was fabricat
 \newpage
 
 ## 3.1 Comparing Baselines
+
+```{r}
+
+gay_r |>
+  filter(study ==2) |>
+  nrow() 
+  
+gay_r |>
+  filter(study ==2) |>
+  group_by(treatment) |>
+  summarize(
+    mean_therm1 = mean(therm1, na.rm= TRUE),
+            sd_therm1 = sd(therm1, na.rm = TRUE))
+
+
+```
+
+There are 2,441 observations in Study 2. The mean and standard deviation for the No Contact group is 57.89 and 28.70, respectively. For Same-Sex Marriage Script with the Gay Canvasser treatment, the mean was 59.35 and 28.42, respectively.
+
+```{r}
+#Q3.2
+
+gay_r |>
+  filter(study %in% c(1,2)) |>
+  ggplot(aes(x=therm1)) + 
+  geom_histogram(breaks = seq(0,100,5), fill = "pink", color = "black") +
+  facet_wrap (~study) +
+  labs(title = "Baseline Thermometer Distributions by Study (1 and 2)",
+       x = "Thermometer Score (Therm1) (0 to 100)", 
+       y = "Count")
+
+
+
+```
+
+The Baseline distributions for Study 1 and Study 2 look similar in shape. For example, both graphs display clustering around 0, 50, and 100. Study 1 appears more concentrated around certain values, whereas Study 2 seemingly depicts more of a spread.
+
+```{r}
+
+#Q3.3
+
+q33<- gay_r |> 
+  filter(study ==2)|>
+filter(treatment %in% c(
+"No Contact", "Same-Sex Marriage Script by Gay Canvasser"))
+
+q33 |> 
+  group_by(treatment) |>
+summarize(
+  mean_therm1 = mean(therm1, na.rm = TRUE),
+  sd_therm1 = sd(therm1, na.rm = TRUE))
+
+q33
+
+(59.35057	- 57.88612) / sqrt((28.41578^2 + 28.69655^2)/2)
+
+```
+
+-   Mean No Contact = 57.88612
+
+-   Standard Deviation No Contact = 28.69655
+
+-   Mean Gay Canvasser = 59.35057
+
+-   Standard Deviation Gay Canvasser = 28.41578
+
+The standardized difference in means is about 0.05. Because it is below 0.25, it suggests a good balance.
+
+```{r}
+
+## Q3.4
+
+q33 |> 
+  group_by(treatment) |>
+summarize(
+  mean_therm2 = mean(therm2, na.rm = TRUE),
+  sd_therm2 = sd(therm2, na.rm = TRUE),
+  n = sum(!is.na(therm2)))
+
+61.20311 - 57.63523
+
+```
+
+The mean post-period thermometer score is higher in the gay canvasser group, with a difference of roughly 3.57 points compared to the no-contact group.
+
+```{r}
+##Q3.5
+
+SE <- sqrt((28.75285^2/1093) + (28.58670^2/1039))
+
+SE
+
+diff <- 3.56788
+
+lower <- diff - 1.96*SE
+
+upper <- diff + 1.96*SE
+
+lower
+upper
+```
+
+The 95% CI is roughly \[1.13, 6.00\]. Since zero is **not** in the interval, we reject no difference and conclude that the gay canvasser group has higher average *therm2* than the no-contact group after the conversation. In other words, the groups differed after the conversations.
+
+```{r}
+
+#3.6
+
+study2_control <- gay_r |>
+  filter(study ==2, treatment == "No Contact")
+
+tibble(
+  wave = c("therm2", "therm3", "therm4"),
+  correlation_with_term1 = c(
+cor(study2_control$therm1, study2_control$therm2, use = "complete.obs"),
+cor(study2_control$therm1, study2_control$therm3, use = "complete.obs"),
+cor(study2_control$therm1, study2_control$therm4, use = "complete.obs")))
+
+```
+
+The correlations remain very high but decline slightly as the waves move further from the baseline. Therm 1 and therm 2 have the highest correlation, then therm1 and therm4, and lastly therm 1 and therm 3. Thus, this suggests that the real survey responses are fairly stable over time (although there is some variation).
+
+## Q3.7
+
+Study 2's data is definitely more realistic compared to Study 1's. In Study 1, the re-test correlation between therm1 and therm2 was extremely high (roughly 0.998 and the standard deviation of within-person change was only about 1.99, meaning that responses barely changed over time. Study 2, on the other hand, had a lower and more realistic correlation (about 0.97) and much larger standard deviation (6.6), meaning that people's responses varied more between survey waves (which is more realistic). The treatment effect in Study 2 was also modest and messier, with the gay canvasser group averaging about 3.6 thermometer points higher than the no-contact group, which is more aligned with real data. It makes sense that real treatment effects would be messy because people's opinions fluctuate and survey responses are affected by measurement error, such as interpretation or uncertainty. Simple tools like means, standard deviations, histograms, and correlations helped detected the fraud because they showed patterns in Study 1 that were unrealistically consistent compared to real survey data.
